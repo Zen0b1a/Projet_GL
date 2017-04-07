@@ -1,6 +1,6 @@
 package service;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 
 /*
  * Classe récupérant et envoyant des informations au fichier XML
@@ -8,7 +8,7 @@ import org.w3c.dom.Document;
 
 public class FilmService {
 	private Document xml;
-	
+	//https://openclassrooms.com/courses/structurez-vos-donnees-avec-xml/dom-exemple-d-utilisation-en-java
 	public FilmService()
 	{
 		

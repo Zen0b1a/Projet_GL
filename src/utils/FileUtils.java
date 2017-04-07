@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.File;
+import java.beans.*;
 import java.io.IOException;
 
 import javax.xml.*;
@@ -34,7 +35,7 @@ public class FileUtils {
 	
 	public static void ecrire(Document xml)
 	{
-		//test
+		
 	}
 	
 	public static Document lire()
@@ -52,7 +53,7 @@ public class FileUtils {
 		try 
 		{
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			xml = builder.parse(fichier);	
+			xml = builder.parse(fichier);
 		} 
 		catch (ParserConfigurationException | SAXException | IOException e) 
 		{
