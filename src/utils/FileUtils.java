@@ -34,7 +34,7 @@ public class FileUtils {
 	
 	public static void ecrire(Document xml)
 	{
-		
+		//test
 	}
 	
 	public static Document lire()
