@@ -1,4 +1,4 @@
-package utils;
+package fr.univ.projet.gl.utils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ private static Logger Log = Logger.getLogger(ConnexionUtils.class.getSimpleName(
 	public void premierTest() throws SQLException
 	{
 		Log.info("Premier test.");
-		Connection connect = ConnexionUtils.getInstance().getConnexion();
+		Connection connect = ConnexionUtils.getInstance();
 		Assert.assertNotNull(connect);
 	}
 }
