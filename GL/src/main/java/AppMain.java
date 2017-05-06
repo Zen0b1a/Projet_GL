@@ -1,6 +1,7 @@
 import javax.swing.JOptionPane;
 
 import fr.univ.projet.gl.facade.FilmFacade;
+import fr.univ.projet.gl.utils.ConnexionUtils;
 
 public class AppMain {
 	public static void main(String args[]) 
@@ -19,5 +20,6 @@ public class AppMain {
         {
         	facade.fichierVersBase();
         }
+        ConnexionUtils.closeConnect();
 	}
 }
