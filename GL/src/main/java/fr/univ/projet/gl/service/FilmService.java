@@ -20,7 +20,7 @@ public class FilmService {
 	//https://openclassrooms.com/courses/java-et-le-xml/a-la-decouverte-de-dom-1
 	public FilmService()
 	{
-		
+		this.lireFichier();
 	}
 	
 	/*
@@ -36,27 +36,36 @@ public class FilmService {
         int nbNode = nodes.getLength();
         for(int i=0; i<nbNode; i++)
         {
-        	System.out.println("Nouveau film");
-        	Node n = nodes.item(i);
-        	Element element = (Element)n;
-        	NodeList film = element.getChildNodes();
-        	String[] film_a_enregistrer = new String[film.getLength()];
-        	for(int j=0; j<film.getLength(); j++)
+        	if(nodes.item(i).getNodeName().equals("film"))
         	{
-        		Node attribut = film.item(j);
-        		if(!noms_colonnes.contains(attribut.getNodeName()))
-        		{
-        			noms_colonnes.add(attribut.getNodeName());
-        			System.out.println("Nom colonne : "+attribut.getNodeName());
-        		}
-        		film_a_enregistrer[j] = attribut.getTextContent();
-        		System.out.println("Valeur : "+attribut.getTextContent());
+	        	System.out.println("Nouveau film");
+	        	NodeList film = nodes.item(i).getChildNodes();
+	        	String[] film_a_enregistrer = new String[(film.getLength()/2)];
+	        	int cpt = 0;
+	        	for(int j=0; j<film.getLength(); j++)
+	        	{
+	        		Node attribut = film.item(j);
+	        		if(!attribut.getNodeName().equals("#text"))
+	        		{
+	        			System.out.println("Nom colonne : "+attribut.getNodeName());
+	        			if(!noms_colonnes.contains(attribut.getNodeName()))
+		        		{
+		        			noms_colonnes.add(attribut.getNodeName());
+		        		}
+		        		if(attribut.getTextContent()!=null)
+		        		{
+			        		film_a_enregistrer[cpt] = attribut.getTextContent();
+			        		cpt++;
+			        		System.out.println("Valeur : "+attribut.getTextContent());
+		        		}
+	        		}
+	        	}
+	        	enregistrement.add(film_a_enregistrer);
         	}
-        	enregistrement.add(film_a_enregistrer);
         }
 		//Enregistrement
-		//FilmDAO filmDAO = new FilmDAO();
-		//filmDAO.enregistrer(noms_colonnes, enregistrement);
+		FilmDAO filmDAO = new FilmDAO();
+		filmDAO.enregistrer(noms_colonnes, enregistrement);
 	}
 	
 	/*
@@ -66,6 +75,13 @@ public class FilmService {
 	{
 		FilmDAO filmDAO = new FilmDAO();
 		CachedRowSet crs = filmDAO.recuperer();
+		Node racine = this.xml.getDocumentElement();
+		racine.setNodeValue("films");
+		int nbNode = racine.getChildNodes().getLength();
+		for(int i=nbNode-1; i>=0; i--)
+		{
+			racine.removeChild(racine.getFirstChild());
+		}
 		//Lecture du crs pour stocker les données dans Document xml
 		try 
 		{
@@ -73,16 +89,22 @@ public class FilmService {
 			crs.beforeFirst();
 			while(crs.next())
 			{
+				Node film = this.xml.createElement("film");
 				for(int i=1; i<=metaData.getColumnCount(); i++)
 				{
-					
+					Element e = this.xml.createElement(metaData.getColumnName(i));
+					e.setTextContent(crs.getObject(i).toString());
+					film.appendChild(e);
 				}
+				racine.appendChild(film);
 			}
 		} 
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
+		this.ecrire();
+		System.out.println("Extraction terminée.");
 	}
 	
 	/*

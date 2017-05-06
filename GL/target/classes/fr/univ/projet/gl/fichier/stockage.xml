@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <films>
-    <film>
-        <titre>titre1</titre>
-        <duree>120</duree>
-    </film>
-    <film>
-        <titre>titre2</titre>
-        <duree>130</duree>
-    </film>
+<film>
+<ID>1</ID>
+<TITRE>titre1</TITRE>
+<DUREE>120</DUREE>
+</film>
+<film>
+<ID>2</ID>
+<TITRE>titre2</TITRE>
+<DUREE>130</DUREE>
+</film>
 </films>

@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 
 public class FileUtils {
 	
-	final static private String CHEMIN_FICHIER = "src/fichier/stockage.xml";
+	final static private String CHEMIN_FICHIER = "src/main/java/fr/univ/projet/gl/fichier/stockage.xml";
 	
 	private FileUtils()
 	{
@@ -80,8 +80,7 @@ public class FileUtils {
 	
 	public static Document lire()
 	{
-		Document xml = null;
-		return xml;
+		return getXML();
 	}
 	
 	private static Document getXML()

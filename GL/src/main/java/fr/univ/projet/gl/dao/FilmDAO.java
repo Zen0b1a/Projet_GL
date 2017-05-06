@@ -22,6 +22,24 @@ public class FilmDAO {
 	 */
 	public void enregistrer(List<String> noms_colonnes, List<String[]> enregistrement)
 	{
+		//Remise à zéro de la table
+		try 
+		{
+			PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM gl_film");
+			try
+			{
+				//Lancement de la suppression
+				stmt.execute();	
+			}
+			finally
+			{
+				stmt.close();
+			}
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
 		String insertion;
 		for(int i=0; i<enregistrement.size(); i++)
 		{
@@ -29,7 +47,7 @@ public class FilmDAO {
 			insertion = "INSERT INTO GL_film (";
 			for(int j=0; j<noms_colonnes.size(); j++)
 			{
-				insertion += noms_colonnes.get(i);
+				insertion += noms_colonnes.get(j);
 				if(j<noms_colonnes.size()-1)
 				{
 					insertion += ", ";
@@ -68,6 +86,7 @@ public class FilmDAO {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Insertion terminée.");
 	}
 	
 	/*
