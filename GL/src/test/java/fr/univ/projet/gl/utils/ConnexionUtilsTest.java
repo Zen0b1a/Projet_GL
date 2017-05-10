@@ -11,9 +11,9 @@ public class ConnexionUtilsTest {
 private static Logger Log = Logger.getLogger(ConnexionUtils.class.getSimpleName());
 	
 	@Test
-	public void premierTest() throws SQLException
+	public void testConnexion() throws SQLException
 	{
-		Log.info("Premier test.");
+		Log.info("Test de connexion");
 		Connection connect = ConnexionUtils.getInstance();
 		Assert.assertNotNull(connect);
 	}

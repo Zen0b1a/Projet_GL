@@ -1,13 +1,19 @@
 package fr.univ.projet.gl.service;
+import java.io.IOException;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
+import exceptions.AttributNullException;
+import exceptions.ColonneExistanteException;
 import fr.univ.projet.gl.dao.FilmDAO;
 import fr.univ.projet.gl.utils.FileUtils;
 
@@ -17,16 +23,18 @@ import fr.univ.projet.gl.utils.FileUtils;
 
 public class FilmService {
 	private Document xml;
+	private String chemin;
 	//https://openclassrooms.com/courses/java-et-le-xml/a-la-decouverte-de-dom-1
-	public FilmService()
+	public FilmService(String chemin) throws SAXException, IOException, ParserConfigurationException
 	{
-		this.lireFichier();
+		this.chemin = chemin;
+		this.xml = FileUtils.getXML(this.chemin);
 	}
 	
 	/*
 	 * Enregistrement dans la base de données
 	 */
-	public void sauvegarder()
+	public void sauvegarder() throws ColonneExistanteException, AttributNullException, SQLException
 	{
 		List<String[]> enregistrement = new ArrayList<>();
 		List<String> noms_colonnes = new ArrayList<>();
@@ -38,7 +46,6 @@ public class FilmService {
         {
         	if(nodes.item(i).getNodeName().equals("film"))
         	{
-	        	System.out.println("Nouveau film");
 	        	NodeList film = nodes.item(i).getChildNodes();
 	        	String[] film_a_enregistrer = new String[(film.getLength()/2)];
 	        	int cpt = 0;
@@ -47,16 +54,25 @@ public class FilmService {
 	        		Node attribut = film.item(j);
 	        		if(!attribut.getNodeName().equals("#text"))
 	        		{
-	        			System.out.println("Nom colonne : "+attribut.getNodeName());
 	        			if(!noms_colonnes.contains(attribut.getNodeName()))
 		        		{
 		        			noms_colonnes.add(attribut.getNodeName());
 		        		}
+	        			else
+	        			{
+	        				if(i==0)
+	        				{
+	        					throw new ColonneExistanteException("Le nom de colonne "+attribut.getNodeName()+" est présent plusieurs fois.");
+	        				}
+	        			}
 		        		if(attribut.getTextContent()!=null)
 		        		{
 			        		film_a_enregistrer[cpt] = attribut.getTextContent();
 			        		cpt++;
-			        		System.out.println("Valeur : "+attribut.getTextContent());
+		        		}
+		        		else
+		        		{
+		        			throw new AttributNullException("L'attribut n'a pas été renseigné.");
 		        		}
 	        		}
 	        	}
@@ -71,7 +87,7 @@ public class FilmService {
 	/*
 	 * Exctraction des données reçues de la base de données dans Document xml
 	 */
-	public void extraire()
+	public void extraire() throws IOException, TransformerException, SQLException
 	{
 		FilmDAO filmDAO = new FilmDAO();
 		CachedRowSet crs = filmDAO.recuperer();
@@ -83,43 +99,27 @@ public class FilmService {
 			racine.removeChild(racine.getFirstChild());
 		}
 		//Lecture du crs pour stocker les données dans Document xml
-		try 
+		ResultSetMetaData metaData = crs.getMetaData();
+		crs.beforeFirst();
+		while(crs.next())
 		{
-			ResultSetMetaData metaData = crs.getMetaData();
-			crs.beforeFirst();
-			while(crs.next())
+			Node film = this.xml.createElement("film");
+			for(int i=1; i<=metaData.getColumnCount(); i++)
 			{
-				Node film = this.xml.createElement("film");
-				for(int i=1; i<=metaData.getColumnCount(); i++)
-				{
-					Element e = this.xml.createElement(metaData.getColumnName(i));
-					e.setTextContent(crs.getObject(i).toString());
-					film.appendChild(e);
-				}
-				racine.appendChild(film);
+				Element e = this.xml.createElement(metaData.getColumnName(i));
+				e.setTextContent(crs.getObject(i).toString());
+				film.appendChild(e);
 			}
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
+			racine.appendChild(film);
 		}
 		this.ecrire();
-		System.out.println("Extraction terminée.");
-	}
-	
-	/*
-	 * Lecture du fichier XML dans Document xml
-	 */
-	public void lireFichier()
-	{
-		this.xml = FileUtils.lire();
 	}
 	
 	/*
 	 * Enregistrement dans le fichier xml
 	 */
-	public void ecrire()
+	private void ecrire() throws IOException, TransformerException
 	{
-		FileUtils.ecrire(xml);
+		FileUtils.ecrire(this.xml, this.chemin);
 	}
 }

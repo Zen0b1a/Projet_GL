@@ -1,10 +1,19 @@
-import javax.swing.JOptionPane;
+import java.io.IOException;
+import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
+
+import exceptions.AttributNullException;
+import exceptions.ColonneExistanteException;
 import fr.univ.projet.gl.facade.FilmFacade;
 import fr.univ.projet.gl.utils.ConnexionUtils;
 
 public class AppMain {
-	public static void main(String args[]) 
+	public static void main(String args[]) throws SAXException, IOException, ParserConfigurationException, TransformerException, SQLException, ColonneExistanteException, AttributNullException 
 	{
 		FilmFacade facade = new FilmFacade();
 		String[] options = { "Extraire les données de la BD vers le fichier", 

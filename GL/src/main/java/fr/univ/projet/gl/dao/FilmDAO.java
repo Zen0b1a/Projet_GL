@@ -20,25 +20,18 @@ public class FilmDAO {
 	 * noms_colonnes : noms des colonnes de la table GL_film
 	 * enregistrement : valeurs à enregistrées
 	 */
-	public void enregistrer(List<String> noms_colonnes, List<String[]> enregistrement)
+	public void enregistrer(List<String> noms_colonnes, List<String[]> enregistrement) throws SQLException
 	{
 		//Remise à zéro de la table
-		try 
+		PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM gl_film");
+		try
 		{
-			PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM gl_film");
-			try
-			{
-				//Lancement de la suppression
-				stmt.execute();	
-			}
-			finally
-			{
-				stmt.close();
-			}
-		} 
-		catch (SQLException e) 
+			//Lancement de la suppression
+			stmt.execute();	
+		}
+		finally
 		{
-			e.printStackTrace();
+			stmt.close();
 		}
 		String insertion;
 		for(int i=0; i<enregistrement.size(); i++)
@@ -63,49 +56,34 @@ public class FilmDAO {
 				}
 			}
 			insertion += ")";
-			try 
+			stmt = ConnexionUtils.getInstance().prepareStatement(insertion);
+			try
 			{
-				PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement(insertion);
-				try
+				//Insertion des valeurs pour l'insertion
+				for(int j=0; j<noms_colonnes.size(); j++)
 				{
-					//Insertion des valeurs pour l'insertion
-					for(int j=0; j<noms_colonnes.size(); j++)
-					{
-						stmt.setObject(j+1, (Object)enregistrement.get(i)[j]);
-					}
-					//Lancement de l'insertion
-					stmt.execute();	
+					stmt.setObject(j+1, (Object)enregistrement.get(i)[j]);
 				}
-				finally
-				{
-					stmt.close();
-				}
-			} 
-			catch (SQLException e) 
+				//Lancement de l'insertion
+				stmt.execute();	
+			}
+			finally
 			{
-				e.printStackTrace();
+				stmt.close();
 			}
 		}
-		System.out.println("Insertion terminée.");
 	}
 	
 	/*
 	 * Récupération des tuples de la table GL_film sous la forme d'un CachedRowSet
 	 */
-	public CachedRowSet recuperer()
+	public CachedRowSet recuperer() throws SQLException
 	{
 		CachedRowSet crs = null;
-		try 
-		{
-			crs = new CachedRowSetImpl();
-			crs.setCommand("SELECT * FROM GL_film");
-	        crs.execute(ConnexionUtils.getInstance());
-	        crs = crs.createCopy();
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}
+		crs = new CachedRowSetImpl();
+		crs.setCommand("SELECT * FROM GL_film");
+        crs.execute(ConnexionUtils.getInstance());
+        crs = crs.createCopy();
 		return crs;
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -22,8 +23,6 @@ import org.xml.sax.SAXException;
 
 public class FileUtils {
 	
-	final static private String CHEMIN_FICHIER = "src/main/java/fr/univ/projet/gl/fichier/stockage.xml";
-	
 	private FileUtils()
 	{
 		
@@ -40,64 +39,37 @@ public class FileUtils {
 	}
 	
 	/*
-	 * Enregistrment du Document passé en paramètre dans CHEMIN_FICHIER
+	 * Enregistrement du Document passé en paramètre à l'emplacement chemin
 	 */
-	public static void ecrire(Document xml)
+	public static void ecrire(Document xml, String chemin) throws IOException, TransformerException
 	{
-		File file = new File(CHEMIN_FICHIER);
+		File file = new File(chemin);
+		OutputStream out = new FileOutputStream(file);
 		try 
 		{
-			OutputStream out = new FileOutputStream(file);
-			try 
-			{
-				TransformerFactory myFactory = TransformerFactory.newInstance();
-				Transformer transformer = myFactory.newTransformer();
-				transformer.setOutputProperty(OutputKeys.ENCODING, "iso-8859-1");
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-				transformer.transform(new DOMSource(xml), new StreamResult(out));
-			} 
-			catch (TransformerException e) 
-			{
-				e.printStackTrace();
-			} 
-			finally 
-			{
-				try 
-				{
-					out.close();
-				} 
-				catch (IOException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			TransformerFactory myFactory = TransformerFactory.newInstance();
+			Transformer transformer = myFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, "iso-8859-1");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.transform(new DOMSource(xml), new StreamResult(out));
 		} 
-		catch (FileNotFoundException e) 
+		finally 
 		{
-			e.printStackTrace();
-		}	
+			out.close();
+		}
 	}
-	
-	public static Document lire()
-	{
-		return getXML();
-	}
-	
-	private static Document getXML()
+
+	/*
+	 * Récupère le fichier XML situé au chemin donné
+	 */
+	public static Document getXML(String chemin) throws SAXException, IOException, ParserConfigurationException
 	{
 		//Récupération du fichier XML
-		File fichier = new File(CHEMIN_FICHIER);
+		File fichier = new File(chemin);
 		Document xml = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try 
-		{
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			xml = builder.parse(fichier);
-		} 
-		catch (ParserConfigurationException | SAXException | IOException e) 
-		{
-			e.printStackTrace();
-		}
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		xml = builder.parse(fichier);
 		return xml;
 	}
 }
