@@ -23,10 +23,38 @@ public class FilmDAO {
 	public void enregistrer(String table, List<String> noms_colonnes, List<String[]> enregistrement) throws SQLException
 	{
 		//Remise à zéro de la table
-		PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM "+table);
+		PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DROP TABLE "+table);
 		try
 		{
-			//Lancement de la suppression
+			try
+			{
+				//Lancement de la suppression
+				stmt.execute();	
+			}
+			catch(SQLException e)
+			{
+				//La table n'existe pas encore
+			}
+		}
+		finally
+		{
+			stmt.close();
+		}
+		//Création de la table
+		String creation = "CREATE TABLE "+table+"(";
+		for(int j=0; j<noms_colonnes.size(); j++)
+		{
+			creation += noms_colonnes.get(j)+" VARCHAR2(100)";
+			if(j<noms_colonnes.size()-1)
+			{
+				creation += ", ";
+			}
+		}
+		creation += ")";
+		stmt = ConnexionUtils.getInstance().prepareStatement(creation);
+		try
+		{
+			//Lancement de la création
 			stmt.execute();	
 		}
 		finally

@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
-import exceptions.ColonneExistanteException;
+import exceptions.ColonneException;
 import fr.univ.projet.gl.service.FilmService;
 import fr.univ.projet.gl.utils.FileUtils;
 
@@ -57,7 +57,7 @@ public class FilmDAOTest
 	public ExpectedException exception = ExpectedException.none();
 	
 	@Test
-	public void enregistrementOK() throws SAXException, IOException, ParserConfigurationException, ColonneExistanteException, AttributNullException, SQLException
+	public void enregistrementOK() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
 	{
 		Log.info("Test de l'enregistrement sur la bonne table.");
 		FilmService fs = new FilmService("src/test/java/fichier/stockage.xml");
@@ -67,7 +67,7 @@ public class FilmDAOTest
 	}
 	
 	@Test
-	public void enregistrementMauvaiseTable() throws SAXException, IOException, ParserConfigurationException, ColonneExistanteException, AttributNullException, SQLException
+	public void enregistrementMauvaiseTable() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
 	{
 		exception.expect(SQLException.class);
 		Log.info("Test de l'enregistrement sur la mauvaise table.");

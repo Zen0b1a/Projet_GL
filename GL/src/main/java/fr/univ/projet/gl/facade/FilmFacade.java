@@ -5,7 +5,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 import exceptions.AttributNullException;
-import exceptions.ColonneExistanteException;
+import exceptions.ColonneException;
 import fr.univ.projet.gl.service.FilmService;
 
 public class FilmFacade 
@@ -20,7 +20,7 @@ public class FilmFacade
 	/*
 	 * Extrait les données du fichier xml pour les enregistrer dans la base
 	 */
-	public void fichierVersBase() throws ColonneExistanteException, AttributNullException, SQLException
+	public void fichierVersBase() throws ColonneException, AttributNullException, SQLException
 	{
 		this.filmService.sauvegarder();
 		this.filmService.enregistrer();

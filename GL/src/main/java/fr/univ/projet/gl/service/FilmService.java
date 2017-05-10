@@ -13,7 +13,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
-import exceptions.ColonneExistanteException;
+import exceptions.ColonneException;
 import fr.univ.projet.gl.dao.FilmDAO;
 import fr.univ.projet.gl.utils.FileUtils;
 
@@ -45,10 +45,24 @@ public class FilmService {
 		return this.enregistrement;
 	}
 	
+	private int getIndiceNomColonne(String nom_colonne)
+	{
+		int indice = -1;
+		for(int i=0; i<this.noms_colonnes.size(); i++)
+		{
+			if(this.noms_colonnes.get(i).equals(nom_colonne))
+			{
+				indice = i;
+				i = this.noms_colonnes.size();
+			}
+		}
+		return indice;
+	}
+	
 	/*
 	 * Enregistrement dans la base de données
 	 */
-	public void sauvegarder() throws ColonneExistanteException, AttributNullException
+	public void sauvegarder() throws ColonneException, AttributNullException
 	{
 		//Lecture de Document xml
 		this.noms_colonnes.clear();
@@ -68,28 +82,40 @@ public class FilmService {
 	        		Node attribut = film.item(j);
 	        		if(!attribut.getNodeName().equals("#text"))
 	        		{
-	        			if(!this.noms_colonnes.contains(attribut.getNodeName()))
-		        		{
-		        			this.noms_colonnes.add(attribut.getNodeName());
-		        		}
+	        			if(enregistrement.isEmpty())
+	        			{
+	        				if(!this.noms_colonnes.contains(attribut.getNodeName()))
+			        		{
+			        			this.noms_colonnes.add(attribut.getNodeName());
+			        		}
+		        			else
+		        			{
+		        				throw new ColonneException("Le nom de colonne "+attribut.getNodeName()+" est présent plusieurs fois.");
+		        			}
+	        			}
 	        			else
 	        			{
-	        				if(i==0)
+	        				if(film.getLength()!=enregistrement.get(0).length)
+        					{
+        						throw new ColonneException("Le nombre de colonnes n'est pas le même pour tous les films.");
+        					}
+	        				if(!this.noms_colonnes.contains(attribut.getNodeName()))
 	        				{
-	        					throw new ColonneExistanteException("Le nom de colonne "+attribut.getNodeName()+" est présent plusieurs fois.");
-	        				}
-	        				else
-	        				{
-	        					if(film.getLength()!=enregistrement.get(0).length)
-	        					{
-	        						throw new ColonneExistanteException("Le nombre de colonnes n'est pas le même pour tous les films.");
-	        					}
-	        				}
+	        					throw new ColonneException("Tous les enregistrements n'ont pas les mêmes colonnes.");
+	        				}			
 	        			}
+	        		
 		        		if(attribut.getTextContent()!=null && !attribut.getTextContent().equals(""))
 		        		{
-			        		film_a_enregistrer[cpt] = attribut.getTextContent();
-			        		cpt++;
+		        			if(this.enregistrement.isEmpty())
+		        			{
+				        		film_a_enregistrer[cpt] = attribut.getTextContent();
+				        		cpt++;
+		        			}
+		        			else
+		        			{
+		        				film_a_enregistrer[this.getIndiceNomColonne(attribut.getNodeName())] = attribut.getTextContent();
+		        			}
 		        		}
 		        		else
 		        		{

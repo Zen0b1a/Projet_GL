@@ -16,7 +16,7 @@ import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
-import exceptions.ColonneExistanteException;
+import exceptions.ColonneException;
 import fr.univ.projet.gl.utils.FileUtils;
 
 public class FilmServiceTest 
@@ -70,7 +70,7 @@ private static Logger Log = Logger.getLogger(FileUtils.class.getSimpleName());
 	public ExpectedException exception = ExpectedException.none();
 	
 	@Test
-	public void sauvegarderOK() throws SAXException, IOException, ParserConfigurationException, ColonneExistanteException, AttributNullException, SQLException
+	public void sauvegarderOK() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
 	{
 		Log.info("Test de la sauvegarde OK");
 		FilmService fs = new FilmService("src/test/java/fichier/stockage.xml");
@@ -78,16 +78,16 @@ private static Logger Log = Logger.getLogger(FileUtils.class.getSimpleName());
 	}
 	
 	@Test
-	public void sauvegarderColonneDouble() throws SAXException, IOException, ParserConfigurationException, ColonneExistanteException, AttributNullException, SQLException
+	public void sauvegarderColonneDouble() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
 	{
-		exception.expect(ColonneExistanteException.class);
+		exception.expect(ColonneException.class);
 		Log.info("Test de la sauvegarde avec une colonne en double.");
 		FilmService fs = new FilmService("src/test/java/fichier/stockageColonneDouble.xml");
 		fs.sauvegarder();
 	}
 	
 	@Test
-	public void sauvegarderAttributNull() throws SAXException, IOException, ParserConfigurationException, ColonneExistanteException, AttributNullException, SQLException
+	public void sauvegarderAttributNull() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
 	{
 		exception.expect(AttributNullException.class);
 		Log.info("Test de la sauvegarde avec un attribut non renseigné.");
