@@ -43,6 +43,10 @@ private static Logger Log = Logger.getLogger(FileUtils.class.getSimpleName());
 					"<film><ID>1</ID><TITRE>titre1</TITRE><TITRE>titre1</TITRE><DUREE>120</DUREE></film>" +
 					"<film><ID>2</ID><TITRE>titre2</TITRE><DUREE>130</DUREE></film></films>\n");
 			fw.close();
+			f = new File("src/test/java/fichier/stockageVide.xml");
+			fw = new FileWriter(f);
+			fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><films></films>");
+			fw.close();
 			f = new File("src/test/java/fichier/stockage.xml");
 			fw = new FileWriter(f);
 			fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><films>" +
@@ -63,6 +67,8 @@ private static Logger Log = Logger.getLogger(FileUtils.class.getSimpleName());
 		File f = new File("src/test/java/fichier/stockageAttributNull.xml");
 		f.delete();
 		f = new File("src/test/java/fichier/stockageColonneDouble.xml");
+		f.delete();
+		f = new File("src/test/java/fichier/stockageVide.xml");
 		f.delete();
 		f = new File("src/test/java/fichier/stockage.xml");
 		f.delete();
@@ -94,6 +100,15 @@ private static Logger Log = Logger.getLogger(FileUtils.class.getSimpleName());
 		exception.expect(AttributNullException.class);
 		Log.info("Test de la sauvegarde avec un attribut non renseigné.");
 		FilmService fs = new FilmService("src/test/java/fichier/stockageAttributNull.xml");
+		fs.sauvegarder();
+	}
+	
+	@Test
+	public void sauvegarderFichierVide() throws SAXException, IOException, ParserConfigurationException, ColonneException, AttributNullException, SQLException
+	{
+		exception.expect(NullPointerException.class);
+		Log.info("Test de la sauvegarde avec un fichier vide.");
+		FilmService fs = new FilmService("src/test/java/fichier/stockageVide.xml");
 		fs.sauvegarder();
 	}
 }

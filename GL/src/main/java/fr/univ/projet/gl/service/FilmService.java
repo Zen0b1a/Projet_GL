@@ -127,6 +127,10 @@ public class FilmService {
 	        	this.enregistrement.add(film_a_enregistrer);
         	}
         }
+        if(this.enregistrement.isEmpty())
+        {
+        	throw new NullPointerException("La liste des enregistrements est vide");
+        }
 	}
 	
 	/*
