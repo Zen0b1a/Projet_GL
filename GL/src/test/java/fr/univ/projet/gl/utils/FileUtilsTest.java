@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -15,8 +13,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import fr.univ.projet.gl.service.FilmService;
 
 public class FileUtilsTest 
 {

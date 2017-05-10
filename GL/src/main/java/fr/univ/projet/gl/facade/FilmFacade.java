@@ -5,6 +5,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 import exceptions.AttributNullException;
+import exceptions.CRSVideException;
 import exceptions.ColonneException;
 import fr.univ.projet.gl.service.FilmService;
 
@@ -29,8 +30,8 @@ public class FilmFacade
 	/*
 	 * Extrait les données de la base pour les enregistrer dans le fichier xml
 	 */
-	public void baseVersFichier() throws IOException, TransformerException, SQLException
+	public void baseVersFichier() throws IOException, TransformerException, SQLException, CRSVideException
 	{
-		this.filmService.extraire();
+		this.filmService.extraire("gl_film");
 	}
 }

@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<films>
-<film>
-<ID>1</ID>
-<TITRE>titre1</TITRE>
-<DUREE>120</DUREE>
-</film>
-<film>
-<ID>2</ID>
-<TITRE>titre2</TITRE>
-<DUREE>130</DUREE>
-</film>
-</films>
+<films/>

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,6 +17,7 @@ import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
+import exceptions.CRSVideException;
 import exceptions.ColonneException;
 import fr.univ.projet.gl.utils.FileUtils;
 

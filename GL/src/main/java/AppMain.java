@@ -8,12 +8,13 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
+import exceptions.CRSVideException;
 import exceptions.ColonneException;
 import fr.univ.projet.gl.facade.FilmFacade;
 import fr.univ.projet.gl.utils.ConnexionUtils;
 
 public class AppMain {
-	public static void main(String args[]) throws SAXException, IOException, ParserConfigurationException, TransformerException, SQLException, ColonneException, AttributNullException 
+	public static void main(String args[]) throws SAXException, IOException, ParserConfigurationException, TransformerException, SQLException, ColonneException, AttributNullException, CRSVideException 
 	{
 		FilmFacade facade = new FilmFacade();
 		String[] options = { "Extraire les données de la BD vers le fichier", 

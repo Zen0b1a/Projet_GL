@@ -13,6 +13,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import exceptions.AttributNullException;
+import exceptions.CRSVideException;
 import exceptions.ColonneException;
 import fr.univ.projet.gl.dao.FilmDAO;
 import fr.univ.projet.gl.utils.FileUtils;
@@ -140,10 +141,10 @@ public class FilmService {
 	/*
 	 * Exctraction des données reçues de la base de données dans Document xml
 	 */
-	public void extraire() throws IOException, TransformerException, SQLException
+	public void extraire(String table) throws IOException, TransformerException, SQLException, CRSVideException
 	{
 		FilmDAO filmDAO = new FilmDAO();
-		CachedRowSet crs = filmDAO.recuperer("GL_film");
+		CachedRowSet crs = filmDAO.recuperer(table);
 		Node racine = this.xml.getDocumentElement();
 		racine.setNodeValue("films");
 		int nbNode = racine.getChildNodes().getLength();

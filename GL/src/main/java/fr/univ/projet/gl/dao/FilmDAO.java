@@ -6,6 +6,7 @@ import java.util.List;
 import javax.sql.rowset.CachedRowSet;
 import com.sun.rowset.CachedRowSetImpl;
 
+import exceptions.CRSVideException;
 import fr.univ.projet.gl.utils.ConnexionUtils;
 
 
@@ -105,13 +106,20 @@ public class FilmDAO {
 	/*
 	 * Récupération des tuples de la table GL_film sous la forme d'un CachedRowSet
 	 */
-	public CachedRowSet recuperer(String table) throws SQLException
+	public CachedRowSet recuperer(String table) throws SQLException, CRSVideException
 	{
 		CachedRowSet crs = null;
 		crs = new CachedRowSetImpl();
 		crs.setCommand("SELECT * FROM "+table);
         crs.execute(ConnexionUtils.getInstance());
         crs = crs.createCopy();
-		return crs;
+        if(crs.isLast())
+        {
+			throw new CRSVideException("Le CRS ne contient pas d'enregistrements.");
+        }
+        else
+        {
+        	return crs;
+        }
 	}
 }
