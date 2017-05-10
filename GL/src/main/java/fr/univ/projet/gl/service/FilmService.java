@@ -24,21 +24,35 @@ import fr.univ.projet.gl.utils.FileUtils;
 public class FilmService {
 	private Document xml;
 	private String chemin;
-	//https://openclassrooms.com/courses/java-et-le-xml/a-la-decouverte-de-dom-1
+	private List<String> noms_colonnes;
+	private List<String[]> enregistrement;
+
 	public FilmService(String chemin) throws SAXException, IOException, ParserConfigurationException
 	{
 		this.chemin = chemin;
 		this.xml = FileUtils.getXML(this.chemin);
+		this.enregistrement = new ArrayList<>();
+		this.noms_colonnes = new ArrayList<>();
+	}
+	
+	public List<String> getNomsColonnes()
+	{
+		return this.noms_colonnes;
+	}
+	
+	public List<String[]> getEnregistrement()
+	{
+		return this.enregistrement;
 	}
 	
 	/*
 	 * Enregistrement dans la base de données
 	 */
-	public void sauvegarder() throws ColonneExistanteException, AttributNullException, SQLException
+	public void sauvegarder() throws ColonneExistanteException, AttributNullException
 	{
-		List<String[]> enregistrement = new ArrayList<>();
-		List<String> noms_colonnes = new ArrayList<>();
 		//Lecture de Document xml
+		this.noms_colonnes.clear();
+		this.enregistrement.clear();
 		Element root = this.xml.getDocumentElement();
         NodeList nodes = root.getChildNodes();
         int nbNode = nodes.getLength();
@@ -47,16 +61,16 @@ public class FilmService {
         	if(nodes.item(i).getNodeName().equals("film"))
         	{
 	        	NodeList film = nodes.item(i).getChildNodes();
-	        	String[] film_a_enregistrer = new String[(film.getLength()/2)];
+	        	String[] film_a_enregistrer = new String[(film.getLength())];
 	        	int cpt = 0;
 	        	for(int j=0; j<film.getLength(); j++)
 	        	{
 	        		Node attribut = film.item(j);
 	        		if(!attribut.getNodeName().equals("#text"))
 	        		{
-	        			if(!noms_colonnes.contains(attribut.getNodeName()))
+	        			if(!this.noms_colonnes.contains(attribut.getNodeName()))
 		        		{
-		        			noms_colonnes.add(attribut.getNodeName());
+		        			this.noms_colonnes.add(attribut.getNodeName());
 		        		}
 	        			else
 	        			{
@@ -64,8 +78,15 @@ public class FilmService {
 	        				{
 	        					throw new ColonneExistanteException("Le nom de colonne "+attribut.getNodeName()+" est présent plusieurs fois.");
 	        				}
+	        				else
+	        				{
+	        					if(film.getLength()!=enregistrement.get(0).length)
+	        					{
+	        						throw new ColonneExistanteException("Le nombre de colonnes n'est pas le même pour tous les films.");
+	        					}
+	        				}
 	        			}
-		        		if(attribut.getTextContent()!=null)
+		        		if(attribut.getTextContent()!=null && !attribut.getTextContent().equals(""))
 		        		{
 			        		film_a_enregistrer[cpt] = attribut.getTextContent();
 			        		cpt++;
@@ -76,12 +97,18 @@ public class FilmService {
 		        		}
 	        		}
 	        	}
-	        	enregistrement.add(film_a_enregistrer);
+	        	this.enregistrement.add(film_a_enregistrer);
         	}
         }
-		//Enregistrement
+	}
+	
+	/*
+	 * Enregistre le résultat obtenu dans la BD
+	 */
+	public void enregistrer() throws SQLException
+	{
 		FilmDAO filmDAO = new FilmDAO();
-		filmDAO.enregistrer(noms_colonnes, enregistrement);
+		filmDAO.enregistrer("GL_film", this.noms_colonnes, this.enregistrement);
 	}
 	
 	/*
@@ -90,7 +117,7 @@ public class FilmService {
 	public void extraire() throws IOException, TransformerException, SQLException
 	{
 		FilmDAO filmDAO = new FilmDAO();
-		CachedRowSet crs = filmDAO.recuperer();
+		CachedRowSet crs = filmDAO.recuperer("GL_film");
 		Node racine = this.xml.getDocumentElement();
 		racine.setNodeValue("films");
 		int nbNode = racine.getChildNodes().getLength();

@@ -20,10 +20,10 @@ public class FilmDAO {
 	 * noms_colonnes : noms des colonnes de la table GL_film
 	 * enregistrement : valeurs à enregistrées
 	 */
-	public void enregistrer(List<String> noms_colonnes, List<String[]> enregistrement) throws SQLException
+	public void enregistrer(String table, List<String> noms_colonnes, List<String[]> enregistrement) throws SQLException
 	{
 		//Remise à zéro de la table
-		PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM gl_film");
+		PreparedStatement stmt = ConnexionUtils.getInstance().prepareStatement("DELETE FROM "+table);
 		try
 		{
 			//Lancement de la suppression
@@ -37,7 +37,7 @@ public class FilmDAO {
 		for(int i=0; i<enregistrement.size(); i++)
 		{
 			//Construction de l'insertion
-			insertion = "INSERT INTO GL_film (";
+			insertion = "INSERT INTO "+table+" (";
 			for(int j=0; j<noms_colonnes.size(); j++)
 			{
 				insertion += noms_colonnes.get(j);
@@ -77,11 +77,11 @@ public class FilmDAO {
 	/*
 	 * Récupération des tuples de la table GL_film sous la forme d'un CachedRowSet
 	 */
-	public CachedRowSet recuperer() throws SQLException
+	public CachedRowSet recuperer(String table) throws SQLException
 	{
 		CachedRowSet crs = null;
 		crs = new CachedRowSetImpl();
-		crs.setCommand("SELECT * FROM GL_film");
+		crs.setCommand("SELECT * FROM "+table);
         crs.execute(ConnexionUtils.getInstance());
         crs = crs.createCopy();
 		return crs;

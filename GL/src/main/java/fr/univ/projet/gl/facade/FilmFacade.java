@@ -23,6 +23,7 @@ public class FilmFacade
 	public void fichierVersBase() throws ColonneExistanteException, AttributNullException, SQLException
 	{
 		this.filmService.sauvegarder();
+		this.filmService.enregistrer();
 	}
 	
 	/*

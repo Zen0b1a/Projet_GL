@@ -43,7 +43,6 @@ public class ConnexionUtils {
         if(single==null)
         {
             single = new ConnexionUtils();
-            System.out.println("Création d'instance.");
         }
         return connect;
     }
@@ -56,7 +55,6 @@ public class ConnexionUtils {
         	{
 	            connect.close();
 	            single = null;
-	            System.out.println("Connexion fermée.");
         	}
         } 
         catch (SQLException e) 

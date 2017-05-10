@@ -43,19 +43,24 @@ public class FileUtils {
 	 */
 	public static void ecrire(Document xml, String chemin) throws IOException, TransformerException
 	{
-		File file = new File(chemin);
-		OutputStream out = new FileOutputStream(file);
-		try 
+		if(xml==null)
+			throw new NullPointerException();
+		else
 		{
-			TransformerFactory myFactory = TransformerFactory.newInstance();
-			Transformer transformer = myFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.ENCODING, "iso-8859-1");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.transform(new DOMSource(xml), new StreamResult(out));
-		} 
-		finally 
-		{
-			out.close();
+			File file = new File(chemin);
+			OutputStream out = new FileOutputStream(file);
+			try 
+			{
+				TransformerFactory myFactory = TransformerFactory.newInstance();
+				Transformer transformer = myFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.ENCODING, "iso-8859-1");
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.transform(new DOMSource(xml), new StreamResult(out));
+			} 
+			finally 
+			{
+				out.close();
+			}
 		}
 	}
 
@@ -66,10 +71,9 @@ public class FileUtils {
 	{
 		//Récupération du fichier XML
 		File fichier = new File(chemin);
-		Document xml = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		xml = builder.parse(fichier);
+		Document xml = builder.parse(fichier);
 		return xml;
 	}
 }
